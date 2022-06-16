@@ -35,7 +35,7 @@ nodes:
       - { name: net0, type: bridge, args: B0 }
       - { name: net1, type: direct, args: C0#net0 }
   - name: C0
-    image: slankdev/ubuntu:16.04
+    image: slankdev/ubuntu:18.04
     interfaces:
       - { name: net0, type: direct, args: R0#net1 }
 
@@ -45,7 +45,7 @@ nodes:
       - { name: net0, type: bridge, args: B0 }
       - { name: net1, type: direct, args: C1#net0 }
   - name: C1
-    image: slankdev/ubuntu:16.04
+    image: slankdev/ubuntu:18.04
     interfaces:
       - { name: net0, type: direct, args: R1#net1 }
 
@@ -55,7 +55,7 @@ nodes:
       - { name: net0, type: bridge, args: B0 }
       - { name: net1, type: direct, args: C2#net0 }
   - name: C2
-    image: slankdev/ubuntu:16.04
+    image: slankdev/ubuntu:18.04
     interfaces:
       - { name: net0, type: direct, args: R2#net1 }
 

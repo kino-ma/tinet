@@ -34,13 +34,13 @@ nodes:
         type: direct
         args: C0#net0
   - name: S0
-    image: slankdev/ubuntu:16.04
+    image: slankdev/ubuntu:18.04
     interfaces:
       - name: net0
         type: direct
         args: R0#net0
   - name: C0
-    image: slankdev/ubuntu:16.04
+    image: slankdev/ubuntu:18.04
     interfaces:
       - name: net0
         type: direct

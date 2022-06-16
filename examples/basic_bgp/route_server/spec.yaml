@@ -32,7 +32,7 @@ nodes:
   - sysctl: net.ipv6.conf.default.disable_ipv6=0
   - sysctl: net.ipv6.conf.all.forwarding=1
 - name: C1
-  image: slankdev/ubuntu:16.04
+  image: slankdev/ubuntu:18.04
   interfaces:
   - { name: net0, type: direct, args: R1#net1 }
   sysctls:
@@ -50,7 +50,7 @@ nodes:
   - sysctl: net.ipv6.conf.default.disable_ipv6=0
   - sysctl: net.ipv6.conf.all.forwarding=1
 - name: C2
-  image: slankdev/ubuntu:16.04
+  image: slankdev/ubuntu:18.04
   interfaces:
   - { name: net0, type: direct, args: R2#net1 }
   sysctls:
@@ -68,7 +68,7 @@ nodes:
   - sysctl: net.ipv6.conf.default.disable_ipv6=0
   - sysctl: net.ipv6.conf.all.forwarding=1
 - name: C3
-  image: slankdev/ubuntu:16.04
+  image: slankdev/ubuntu:18.04
   interfaces:
   - { name: net0, type: direct, args: R3#net1 }
   sysctls:

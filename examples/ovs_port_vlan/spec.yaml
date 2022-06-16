@@ -12,17 +12,17 @@
 
 nodes:
   - name: C0
-    image: slankdev/ubuntu:16.04
+    image: slankdev/ubuntu:18.04
     interfaces: [{ name: net0, type: direct, args: SW0#swp0 }]
   - name: C1
-    image: slankdev/ubuntu:16.04
+    image: slankdev/ubuntu:18.04
     interfaces: [{ name: net0, type: direct, args: SW0#swp1 }]
 
   - name: C2
-    image: slankdev/ubuntu:16.04
+    image: slankdev/ubuntu:18.04
     interfaces: [{ name: net0, type: direct, args: SW1#swp0 }]
   - name: C3
-    image: slankdev/ubuntu:16.04
+    image: slankdev/ubuntu:18.04
     interfaces: [{ name: net0, type: direct, args: SW1#swp1 }]
 
   - name: SW0
