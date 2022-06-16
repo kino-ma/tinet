@@ -11,15 +11,15 @@
 #
 # TOPO:
 #
-#                          vlan1:10.0.0.0/24
-#                     .1(net0)          .2(net0)
-#                R0(AS100)------------------R1(AS200)
-#            (net1).1|                          |.1(net1)
-#                    |                          |
-#  vlan1:10.1.0.0/24 |                          | vlan1:10.2.0.0/24
-#                    |                          |
-#            (net0).2|                          |.2(net0)
-#                R2(AS300)                  R3(AS400)
+#                          vlan1:10.0.0.0/24                # kino-ma
+#                     .1(net0)          .2(net0)    .2(net2)  vlan1:10.5.0.0/24  .1(net0)
+#                R0(AS100)------------------R1(AS200)---------------------------------R4(AS500)
+#            (net1).1|                          |.1(net1)                                  |.1(net1)
+#                    |                          |                                          |
+#  vlan1:10.1.0.0/24 |                          | vlan1:10.2.0.0/24                        | vlan1:10.6.0.0/24
+#                    |                          |                                          |
+#            (net0).2|                          |.2(net0)                                  |.2(net0)
+#                R2(AS300)                  R3(AS400)                                      C2
 #            (net1).1|                          |.1(net1)
 #                    |                          |
 #  vlan1:10.3.0.0/24 |                          | vlan1:10.4.0.0/24
@@ -39,6 +39,7 @@ nodes:
     interfaces:
       - { name: net0, type: direct, args: R0#net0 }
       - { name: net1, type: direct, args: R3#net0 }
+      - { name: net2, type: direct, args: R4#net0 }
   - name: R2
     image: slankdev/frr
     interfaces:
@@ -50,14 +51,27 @@ nodes:
       - { name: net0, type: direct, args: R1#net1 }
       - { name: net1, type: direct, args: C1#net0 }
 
+  # kino-ma
+  - name: R4
+    image: slankdev/frr
+    interfaces:
+      - { name: net0, type: direct, args: R1#net2 }
+      - { name: net1, type: direct, args: C2#net0 }
+
   - name: C0
-    image: slankdev/ubuntu:16.04
+    image: slankdev/ubuntu:18.04
     interfaces:
       - { name: net0, type: direct, args: R2#net1 }
   - name: C1
-    image: slankdev/ubuntu:16.04
+    image: slankdev/ubuntu:18.04
     interfaces:
       - { name: net0, type: direct, args: R3#net1 }
+
+  # kino-ma
+  - name: C2
+    image: slankdev/ubuntu:18.04
+    interfaces:
+      - { name: net0, type: direct, args: R4#net1 }
 
 node_configs:
   - name: R0
@@ -78,14 +92,17 @@ node_configs:
       - cmd: /usr/lib/frr/frr start
       - cmd: ip addr add 10.0.0.2/24 dev net0
       - cmd: ip addr add 10.2.0.1/24 dev net1
+      - cmd: ip addr add 10.5.0.2/24 dev net2
       - cmd: >-
           vtysh -c "conf t"
           -c "router bgp 200"
           -c "bgp router-id 2.2.2.2"
           -c "neighbor 10.0.0.1 remote-as 100"
           -c "neighbor 10.2.0.2 remote-as 400"
+          -c "neighbor 10.5.0.1 remote-as 500"
           -c "network 10.2.0.0/24"
-          -c "network 10.2.4.0/24"
+          -c "network 10.0.0.0/24"
+          -c "network 10.5.0.0/24"
   - name: R2
     cmds:
       - cmd: /usr/lib/frr/frr start
@@ -109,6 +126,20 @@ node_configs:
           -c "neighbor 10.2.0.1 remote-as 200"
           -c "network 10.4.0.0/24"
 
+  # kino-ma
+  - name: R4
+    cmds:
+      - cmd: 
+      - cmd: /usr/lib/frr/frr start
+      - cmd: ip addr add 10.5.0.1/24 dev net0
+      - cmd: ip addr add 10.6.0.1/24 dev net1
+      - cmd: >-
+          vtysh -c "conf t"
+          -c "router bgp 500"
+          -c "bgp router-id 5.5.5.5"
+          -c "neighbor 10.5.0.2 remote-as 200"
+          -c "network 10.6.0.0/24"
+
   - name: C0
     cmds:
       - cmd: ip addr add 10.3.0.2/24 dev net0
@@ -119,6 +150,13 @@ node_configs:
       - cmd: ip addr add 10.4.0.2/24 dev net0
       - cmd: ip route del default
       - cmd: ip route add default via 10.4.0.1
+
+  # kino-ma
+  - name: C2
+    cmds:
+      - cmd: ip addr add 10.6.0.2/24 dev net0
+      - cmd: ip route del default
+      - cmd: ip route add default via 10.6.0.1
 
 test:
   - cmds:
